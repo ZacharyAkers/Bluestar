@@ -1,21 +1,22 @@
-const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/api/hello', (req, res) => {
+    res.send({ express: 'Hello From Express' });
+});
+
+app.post('/api/world', (req, res) => {
+    console.log(req.body);
+    res.send(
+    `I received your POST request. This is what you sent me: ${req.body.post}`,
+    );
+});
 
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
-});
-
-// Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, '../client/build')));
-
-// Handle GET requests to /api route
-app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
-});
-
-// All other GET requests not handled before will return our React app
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 });
